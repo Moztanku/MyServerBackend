@@ -91,7 +91,7 @@ net::ssl::context getSSLContext(
     if (!exists(path(cert_path).remove_filename()) ||
     !exists(path(key_path).remove_filename()) ||
     !exists(path(dh_path).remove_filename())) {
-        std::cerr << "Specified directory of key/certificate/dhparams doesn't exist";
+        std::cerr << "Specified directory of key/certificate/dhparams doesn't exist (./ssl by default)\n";
         std::exit(EXIT_FAILURE);
     }
 

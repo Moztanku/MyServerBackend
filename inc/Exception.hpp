@@ -6,7 +6,8 @@
 enum class exception_type
 {
     file_not_found,
-    invalid_config_file
+    invalid_config_file,
+    unnamed_yet
 };
 
 void throw_exception(exception_type type, const std::string& message = "")
