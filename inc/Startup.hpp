@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 
@@ -82,7 +83,17 @@ net::ssl::context getSSLContext(
     const std::string_view dh_path,
     const std::string_view passphrase)
 {
+    using std::filesystem::path;
+    using std::filesystem::exists;
+
     net::ssl::context ctx(net::ssl::context::tlsv12);
+
+    if (!exists(path(cert_path).remove_filename()) ||
+    !exists(path(key_path).remove_filename()) ||
+    !exists(path(dh_path).remove_filename())) {
+        std::cerr << "Specified directory of key/certificate/dhparams doesn't exist";
+        std::exit(EXIT_FAILURE);
+    }
 
     ctx.set_options(
         net::ssl::context::default_workarounds |
@@ -104,7 +115,7 @@ net::ssl::context getSSLContext(
     } catch (const std::exception& e) {
         std::cerr << "Missing certificate/key file, generate using:\n"
                   << std::format("openssl req -nodes -x509 -newkey rsa:2048 -keyout {} -out {} -days 365\n", key_path, cert_path);
-        std::exit(1);
+        std::exit(EXIT_FAILURE);
     }
 
     try {
@@ -112,7 +123,7 @@ net::ssl::context getSSLContext(
     } catch (const std::exception& e) {
         std::cerr << "Missing DH params file, generate using:\n"
                   << std::format("openssl dhparam -out {} 2048\n", dh_path);
-        std::exit(1);
+        std::exit(EXIT_FAILURE);
     }
 
     return ctx;
