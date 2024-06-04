@@ -36,5 +36,9 @@ void throw_exception(exception_type type, const std::string& message = "", const
         to_string(type), message,
         dark, location.file_name(), location.line(), reset
     );
+
+    if (type == exception_type::unnamed_yet)
+        return;
+
     std::exit(EXIT_FAILURE);
 }
